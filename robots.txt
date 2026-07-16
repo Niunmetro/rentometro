@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://niunmetro.github.io/rentometro/sitemap.xml
