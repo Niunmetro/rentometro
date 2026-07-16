@@ -1,7 +1,7 @@
 const formatter = new Intl.NumberFormat("es-ES", {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
-  useGrouping: false,
+  useGrouping: true,
 });
 
 export function formatearEuros(n: number): string {

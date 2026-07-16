@@ -33,10 +33,10 @@ export function interpretarCashflow(mensual: number): string {
 
 export function interpretarCashOnCash(pct: number): string {
   if (pct < 0) {
-    return `Pierdes un ${Math.abs(pct).toFixed(2)}% sobre lo que aportaste inicialmente cada año. Evaluá si es aceptable.`;
+    return `Pierdes un ${Math.abs(pct).toFixed(2)}% sobre lo que aportaste inicialmente cada año. Evalúa si te compensa.`;
   }
   if (pct < 8) {
-    return `Un ${pct.toFixed(2)}% anual sobre lo aportado. Rendimiento tibio, esperaría al menos un 8% para que sea atractivo.`;
+    return `Un ${pct.toFixed(2)}% anual sobre lo aportado. Rendimiento tibio: por debajo del 8% suele no compensar el riesgo.`;
   }
   return `Un ${pct.toFixed(2)}% anual sobre lo aportado. Rendimiento atractivo y competitivo en el mercado actual.`;
 }

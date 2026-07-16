@@ -6,7 +6,7 @@ import { formatearEuros, formatearPct, formatearNumero } from "../src/format";
 
 describe("formatearNumero", () => {
   it("formatea con coma decimal y 2 decimales", () => {
-    expect(formatearNumero(1234.5)).toBe("1234,50");
+    expect(formatearNumero(1234.5)).toBe("1.234,50");
   });
 
   it("formatea negativos y cero", () => {
@@ -17,7 +17,7 @@ describe("formatearNumero", () => {
 
 describe("formatearEuros", () => {
   it("añade el sufijo de euros", () => {
-    expect(formatearEuros(1500)).toBe("1500,00 €");
+    expect(formatearEuros(1500)).toBe("1.500,00 €");
     expect(formatearEuros(0)).toBe("0,00 €");
   });
 });

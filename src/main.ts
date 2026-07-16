@@ -93,7 +93,8 @@ function leerEstadoDesdeInputs(): Record<Campo, number> {
   const estado = { ...DEFAULTS };
   for (const campo of CAMPOS) {
     const input = document.getElementById(`in-${campo}`);
-    const valor = input instanceof HTMLInputElement && input.value !== "" ? parseFloat(input.value) : 0;
+    const bruto = input instanceof HTMLInputElement ? input.value.trim().replace(",", ".") : "";
+    const valor = bruto !== "" ? parseFloat(bruto) : 0;
     estado[campo] = Number.isFinite(valor) ? valor : 0;
   }
   return estado;
@@ -140,19 +141,34 @@ function frase(n: number, interpretar: (n: number) => string): string {
   return Number.isFinite(n) ? interpretar(n) : "—";
 }
 
+function claseSemaforo(n: number, bueno: number, regular: number): string {
+  if (!Number.isFinite(n)) return "kpi-neutro";
+  if (n >= bueno) return "kpi-bien";
+  if (n >= regular) return "kpi-regular";
+  return "kpi-mal";
+}
+
+function kpi(etiqueta: string, valor: string, clase: string): string {
+  return `<div class="kpi ${clase}"><span class="kpi-etiqueta">${etiqueta}</span><span class="kpi-valor">${valor}</span></div>`;
+}
+
 function renderRentabilidad(r: ResultadoRentabilidad): void {
   const el = document.getElementById("res-rentabilidad");
   if (!el) return;
   el.innerHTML = `
-    <p>Coste total: ${seguro(r.costeTotal, formatearEuros)}</p>
-    <p>Impuestos: ${seguro(r.impuestos, formatearEuros)}</p>
-    <p>Alquiler anual: ${seguro(r.alquilerAnual, formatearEuros)}</p>
-    <p>Alquiler anual efectivo: ${seguro(r.alquilerAnualEfectivo, formatearEuros)}</p>
-    <p>Gastos anuales: ${seguro(r.gastosAnuales, formatearEuros)}</p>
-    <p>Rentabilidad bruta: ${seguro(r.brutaPct, formatearPct)}</p>
-    <p>${frase(r.brutaPct, interpretarBruta)}</p>
-    <p>Rentabilidad neta: ${seguro(r.netaPct, formatearPct)}</p>
-    <p>${frase(r.netaPct, interpretarNeta)}</p>
+    <div class="kpis">
+      ${kpi("Rentabilidad bruta", seguro(r.brutaPct, formatearPct), claseSemaforo(r.brutaPct, 7, 5))}
+      ${kpi("Rentabilidad neta", seguro(r.netaPct, formatearPct), claseSemaforo(r.netaPct, 6, 4))}
+    </div>
+    <p class="interpretacion">${frase(r.brutaPct, interpretarBruta)}</p>
+    <p class="interpretacion">${frase(r.netaPct, interpretarNeta)}</p>
+    <dl class="desglose">
+      <dt>Coste total de la operación</dt><dd>${seguro(r.costeTotal, formatearEuros)}</dd>
+      <dt>Impuestos de compra</dt><dd>${seguro(r.impuestos, formatearEuros)}</dd>
+      <dt>Alquiler anual</dt><dd>${seguro(r.alquilerAnual, formatearEuros)}</dd>
+      <dt>Alquiler efectivo (tras vacancia)</dt><dd>${seguro(r.alquilerAnualEfectivo, formatearEuros)}</dd>
+      <dt>Gastos anuales</dt><dd>${seguro(r.gastosAnuales, formatearEuros)}</dd>
+    </dl>
   `;
 }
 
@@ -168,9 +184,11 @@ function renderHipoteca(r: ResultadoHipoteca): void {
   const el = document.getElementById("res-hipoteca");
   if (!el) return;
   el.innerHTML = `
-    <p>Cuota mensual: ${seguro(r.cuotaMensual, formatearEuros)}</p>
-    <p>Intereses totales: ${seguro(r.interesesTotales, formatearEuros)}</p>
-    ${renderTablaPorAnio(r.tablaPorAnio)}
+    <div class="kpis">
+      ${kpi("Cuota mensual", seguro(r.cuotaMensual, formatearEuros), "kpi-neutro")}
+      ${kpi("Intereses totales", seguro(r.interesesTotales, formatearEuros), "kpi-neutro")}
+    </div>
+    <details class="amortizacion"><summary>Ver capital pendiente año a año</summary>${renderTablaPorAnio(r.tablaPorAnio)}</details>
   `;
 }
 
@@ -178,26 +196,55 @@ function renderCashflow(r: ResultadoCashflow): void {
   const el = document.getElementById("res-cashflow");
   if (!el) return;
   el.innerHTML = `
-    <p>Cuota mensual: ${seguro(r.cuotaMensual, formatearEuros)}</p>
-    <p>Capital aportado: ${seguro(r.capitalAportado, formatearEuros)}</p>
-    <p>Cashflow mensual: ${seguro(r.cashflowMensual, formatearEuros)}</p>
-    <p>${frase(r.cashflowMensual, interpretarCashflow)}</p>
-    <p>Cashflow anual: ${seguro(r.cashflowAnual, formatearEuros)}</p>
-    <p>Cash-on-cash: ${seguro(r.cashOnCashPct, formatearPct)}</p>
-    <p>${frase(r.cashOnCashPct, interpretarCashOnCash)}</p>
+    <div class="kpis">
+      ${kpi("Cashflow mensual", seguro(r.cashflowMensual, formatearEuros), claseSemaforo(r.cashflowMensual, 1, 0))}
+      ${kpi("Cash-on-cash", seguro(r.cashOnCashPct, formatearPct), claseSemaforo(r.cashOnCashPct, 8, 4))}
+    </div>
+    <p class="interpretacion">${frase(r.cashflowMensual, interpretarCashflow)}</p>
+    <p class="interpretacion">${frase(r.cashOnCashPct, interpretarCashOnCash)}</p>
+    <dl class="desglose">
+      <dt>Cuota mensual de la hipoteca</dt><dd>${seguro(r.cuotaMensual, formatearEuros)}</dd>
+      <dt>Capital que aportas</dt><dd>${seguro(r.capitalAportado, formatearEuros)}</dd>
+      <dt>Cashflow anual</dt><dd>${seguro(r.cashflowAnual, formatearEuros)}</dd>
+    </dl>
   `;
 }
+
+let timerPersistencia: number | undefined;
 
 function actualizar(): void {
   const estado = leerEstadoDesdeInputs();
 
-  renderRentabilidad(calcularRentabilidad(construirEntradasRentabilidad(estado)));
+  const rent = calcularRentabilidad(construirEntradasRentabilidad(estado));
+  const cash = calcularCashflow(construirEntradasCashflow(estado));
+  renderRentabilidad(rent);
   renderHipoteca(calcularHipoteca(construirEntradasHipoteca(estado)));
-  renderCashflow(calcularCashflow(construirEntradasCashflow(estado)));
+  renderCashflow(cash);
 
-  guardarEnLocal(CLAVE_LOCAL, estado);
-  const query = estadoAUrl(estado);
-  history.replaceState(null, "", query ? `?${query}` : window.location.pathname);
+  // Barra fija inferior: las 2 cifras que importan, visibles al teclear en movil.
+  const sticky = document.getElementById("kpi-sticky");
+  const stNeta = document.getElementById("sticky-neta");
+  const stCash = document.getElementById("sticky-cashflow");
+  if (sticky && stNeta && stCash) {
+    sticky.hidden = false;
+    stNeta.textContent = `Neta ${seguro(rent.netaPct, formatearPct)}`;
+    stNeta.className = claseSemaforo(rent.netaPct, 6, 4);
+    stCash.textContent = `Cashflow ${seguro(cash.cashflowMensual, formatearEuros)}/mes`;
+    stCash.className = claseSemaforo(cash.cashflowMensual, 1, 0);
+  }
+  const live = document.getElementById("live-resumen");
+  if (live) {
+    live.textContent = `Rentabilidad neta ${seguro(rent.netaPct, formatearPct)}, cashflow mensual ${seguro(cash.cashflowMensual, formatearEuros)}`;
+  }
+
+  // Persistencia con debounce: replaceState/localStorage en cada tecla molesta a Safari
+  // (limite de llamadas) y no aporta nada; el render si es inmediato.
+  if (timerPersistencia !== undefined) window.clearTimeout(timerPersistencia);
+  timerPersistencia = window.setTimeout(() => {
+    guardarEnLocal(CLAVE_LOCAL, estado);
+    const query = estadoAUrl(estado);
+    history.replaceState(null, "", query ? `?${query}` : window.location.pathname);
+  }, 350);
 }
 
 function inicializarInputs(): void {
@@ -223,7 +270,10 @@ function activarTab(tabId: string): void {
     const tabEl = document.getElementById(t.tabId);
     const panelEl = document.getElementById(t.panelId);
     const activo = t.tabId === tabId;
-    if (tabEl) tabEl.setAttribute("aria-selected", String(activo));
+    if (tabEl) {
+      tabEl.setAttribute("aria-selected", String(activo));
+      (tabEl as HTMLElement).tabIndex = activo ? 0 : -1;   // roving tabindex del patron tabs
+    }
     if (panelEl) {
       if (activo) panelEl.removeAttribute("hidden");
       else panelEl.setAttribute("hidden", "");
@@ -265,7 +315,28 @@ function inicializarEnlaces(): void {
   const formEmail = document.getElementById("form-email");
   if (formEmail instanceof HTMLFormElement) {
     formEmail.action = EMAIL_FORM_ACTION;
+    formEmail.addEventListener("submit", (ev) => {
+      if (EMAIL_FORM_ACTION === "#") {
+        // Sin endpoint configurado, un POST a una pagina estatica daria un 405 feo.
+        ev.preventDefault();
+        const aviso = document.createElement("p");
+        aviso.className = "nota";
+        aviso.textContent = "La guía está en camino: vuelve en unos días y déjanos tu correo.";
+        formEmail.replaceChildren(aviso);
+      }
+    });
   }
+
+  // Enter en un input de calculo NO debe recargar la pagina (forms sin action).
+  document.querySelectorAll("main form:not(#form-email)").forEach((f) => {
+    f.addEventListener("submit", (ev) => ev.preventDefault());
+  });
+
+  // Huecos de anuncio sin snippet pegado: ocultos (una caja vacia con borde encima del
+  // titulo era lo primero que se veia). Al pegar AdSense apareceran solos.
+  document.querySelectorAll(".ad-slot").forEach((slot) => {
+    if (!slot.firstElementChild) (slot as HTMLElement).hidden = true;
+  });
 
   const footerLink = document.querySelector("footer a");
   if (footerLink instanceof HTMLAnchorElement) {

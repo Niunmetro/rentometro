@@ -1,7 +1,10 @@
 import type { EntradasHipoteca, ResultadoHipoteca, FilaAmortizacion } from "../types";
 
 export function calcularHipoteca(e: EntradasHipoteca): ResultadoHipoteca {
-  const { importe, interesAnualPct, plazoAnios } = e;
+  const { importe, interesAnualPct } = e;
+  // Plazo acotado a 1-60 anos: un typo ("9999999") congelaria la pestana iterando
+  // millones de meses y generando una tabla gigante.
+  const plazoAnios = Math.min(Math.max(Math.floor(e.plazoAnios) || 1, 1), 60);
   const i = interesAnualPct / 100 / 12;
   const n = plazoAnios * 12;
 

@@ -21,14 +21,28 @@ export function urlAEstado(query: string): Record<string, number> {
 }
 
 export function guardarEnLocal(clave: string, valores: Record<string, number>): void {
-  globalThis.localStorage.setItem(clave, JSON.stringify(valores));
+  // localStorage puede LANZAR con cookies/almacenamiento bloqueados (modo privado,
+  // ajustes de Chrome) o cuota llena: guardar es opcional, nunca debe romper la app.
+  try {
+    globalThis.localStorage.setItem(clave, JSON.stringify(valores));
+  } catch {
+    /* sin almacenamiento: se sigue sin persistir */
+  }
 }
 
 export function cargarDeLocal(clave: string): Record<string, number> | null {
-  const raw = globalThis.localStorage.getItem(clave);
-  if (raw === null) return null;
+  // El ACCESO a localStorage tambien puede lanzar (almacenamiento bloqueado).
   try {
-    return JSON.parse(raw) as Record<string, number>;
+    const raw = globalThis.localStorage.getItem(clave);
+    if (raw === null) return null;
+    const datos: unknown = JSON.parse(raw);
+    // Validar la forma: un '[]', '42' o valores no numericos guardados a mano no son estado.
+    if (typeof datos !== "object" || datos === null || Array.isArray(datos)) return null;
+    const estado: Record<string, number> = {};
+    for (const [k, v] of Object.entries(datos)) {
+      if (typeof v === "number" && Number.isFinite(v)) estado[k] = v;
+    }
+    return estado;
   } catch {
     return null;
   }

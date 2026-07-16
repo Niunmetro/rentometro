@@ -1,0 +1,21 @@
+Rentómetro: web estática en español para calcular la rentabilidad de un piso de alquiler en España. Público: pequeños inversores inmobiliarios. Objetivo: herramienta gratuita, rápida y fiable que posicione en Google y monetice con publicidad/afiliación.
+
+STACK YA MONTADO (no lo cambies, NO añadas dependencias npm nuevas): Vite + TypeScript estricto + Vitest. index.html, src/main.ts, tests/smoke.test.ts ya existen. Todo en vanilla TS + CSS puro (src/style.css), sin frameworks. Los tests van en tests/*.test.ts y se corren con npm test; tipos con npx --no-install tsc --noEmit; build con npm run build.
+
+ARQUITECTURA OBLIGATORIA: la lógica de cálculo va en funciones PURAS en src/calc/ (un módulo por calculadora, sin tocar el DOM), la UI en src/ui/ los importa. Así cada módulo se testea aislado y las tareas no comparten ficheros.
+
+CALCULADORAS (pestañas en una sola página):
+1) Rentabilidad bruta y neta. Entradas: precio compra, ITP % (o IVA), notaría+registro €, reforma €, alquiler mensual, IBI anual, comunidad anual, seguros anuales €, mantenimiento % del alquiler, vacancia % (meses vacíos), gestión % del alquiler. Fórmulas: coste total = precio + impuestos + notaría + reforma; bruta % = alquiler anual / coste total × 100; neta % = (alquiler anual efectivo tras vacancia − gastos anuales) / coste total × 100.
+2) Hipoteca (sistema francés). Entradas: importe, interés anual %, plazo años. Salidas: cuota mensual = P·i/(1−(1+i)^−n) con i mensual, intereses totales, y tabla resumen por año (capital pendiente).
+3) Cashflow y cash-on-cash. Entradas: las de 1) + entrada % y datos de hipoteca. Salidas: cashflow mensual (alquiler efectivo − gastos mensualizados − cuota) y cash-on-cash % = cashflow anual / capital aportado (entrada + impuestos + notaría + reforma) × 100.
+
+UI/UX: una página, oscura, limpia, mobile-first, resultados en vivo al teclear, números formateados es-ES (Intl.NumberFormat), cada resultado con una frase interpretativa (ej. "una neta por debajo del 4% suele no compensar el riesgo"). Los inputs se guardan en localStorage y se pueden compartir por URL (query params). Accesibilidad: labels reales, foco visible, aria en las pestañas.
+
+SEO Y MONETIZACIÓN (parte del producto, no opcional):
+- <head> completo: title/description/OG/canonical; sección FAQ (6 preguntas sobre rentabilidad de alquiler en España) con JSON-LD schema.org FAQPage; public/robots.txt y public/sitemap.xml estáticos.
+- Dos huecos de anuncio: <div class="ad-slot" id="ad-top"> y id="ad-bottom" con comentario <!-- AdSense: pegar snippet aquí --> y estilo discreto de placeholder.
+- Bloque de afiliación bajo el resultado de hipoteca: "Compara hipotecas y ahórrate miles de €" con enlace <a id="afiliado-hipoteca" href="#" rel="sponsored"> configurable desde una constante en src/config.ts.
+- Captura de email al pie del resultado: "Recibe la guía gratuita del inversor" con form POST a una URL configurable en src/config.ts (por defecto '#', sin backend).
+- Footer: "Hecho por inversores. ¿Analizas pisos en serio? → Inmomargen (próximamente)" con enlace configurable en src/config.ts.
+
+Los tests deben fijar las fórmulas con casos numéricos concretos y realistas (ej. piso de 120.000 € con ITP 8% alquilado a 750 €/mes) y cubrir bordes: interés 0%, vacancia 0 y 100%, entrada 100% (sin hipoteca).
