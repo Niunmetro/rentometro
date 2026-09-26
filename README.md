@@ -29,9 +29,14 @@ Stack: Vite + TypeScript estricto + Vitest. Sin frameworks, sin dependencias de 
 
 GitHub Pages sirve la rama `gh-pages`:
 
+`dist/` está en `.gitignore`, así que se publica con un worktree de `gh-pages`:
+
 ```bash
 npm run build
-git subtree push --prefix dist origin gh-pages   # o el script de deploy
+git worktree add ../rentometro-gh-pages gh-pages
+cp -r dist/. ../rentometro-gh-pages/            # borra antes los assets viejos
+git -C ../rentometro-gh-pages add -A && git -C ../rentometro-gh-pages commit -m "Deploy" && git -C ../rentometro-gh-pages push origin gh-pages
+git worktree remove ../rentometro-gh-pages
 ```
 
 ## Monetización

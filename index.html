@@ -6,164 +6,251 @@
     <title>Rentómetro — Calculadora de rentabilidad de alquiler</title>
     <meta name="description" content="Calcula gratis la rentabilidad bruta y neta de un piso de alquiler en España: hipoteca, cashflow y cash-on-cash en segundos." />
     <link rel="canonical" href="https://niunmetro.github.io/rentometro/" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#f5f4ef" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:site_name" content="Rentómetro" />
     <meta property="og:title" content="Rentómetro — Calculadora de rentabilidad de alquiler" />
     <meta property="og:description" content="Calcula gratis la rentabilidad bruta y neta de un piso de alquiler en España: hipoteca, cashflow y cash-on-cash en segundos." />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary" />
-    <meta name="theme-color" content="#121212" />
     <meta property="og:url" content="https://niunmetro.github.io/rentometro/" />
+    <meta property="og:image" content="https://niunmetro.github.io/rentometro/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Rentómetro: rentabilidad bruta, neta, hipoteca y cashflow de un piso de alquiler" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://niunmetro.github.io/rentometro/og.png" />
   </head>
   <body>
+    <a class="saltar" href="#calculadora">Saltar a la calculadora</a>
     <div id="app"></div>
+
+    <header class="cabecera">
+      <div class="contenedor cabecera-barra">
+        <a class="logo" href="./" aria-label="Rentómetro, inicio">
+          <svg class="logo-marca" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+            <rect width="32" height="32" rx="8" fill="#0f766e" />
+            <path d="M7 21a9 9 0 0 1 18 0" fill="none" stroke="#ccfbf1" stroke-width="2.6" stroke-linecap="round" />
+            <path d="M16 21l5.2-6.4" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" />
+            <circle cx="16" cy="21" r="2.2" fill="#ffffff" />
+          </svg>
+          <span>Rentómetro</span>
+        </a>
+        <ul class="sellos" aria-label="Características">
+          <li>Gratis</li>
+          <li>Sin registro</li>
+          <li>Tus datos no salen del navegador</li>
+        </ul>
+      </div>
+    </header>
 
     <div class="ad-slot" id="ad-top"><!-- AdSense: pegar snippet aqui --></div>
 
     <main>
-      <p class="marca">RENTÓMETRO</p>
-      <h1>Calculadora de rentabilidad de alquiler en España</h1>
-      <p class="entradilla">Rentabilidad bruta y neta, cuota de hipoteca, cashflow mensual y cash-on-cash de un piso de alquiler, al momento y sin registrarte. Los datos no salen de tu navegador.</p>
-
-      <div role="tablist" aria-label="Calculadoras">
-        <button role="tab" id="tab-rentabilidad" aria-selected="true" aria-controls="panel-rentabilidad" type="button">Rentabilidad</button>
-        <button role="tab" id="tab-hipoteca" aria-selected="false" aria-controls="panel-hipoteca" type="button">Hipoteca</button>
-        <button role="tab" id="tab-cashflow" aria-selected="false" aria-controls="panel-cashflow" type="button">Cashflow</button>
-      </div>
-
-      <section role="tabpanel" id="panel-rentabilidad" aria-labelledby="tab-rentabilidad">
-        <h2>Calculadora de rentabilidad bruta y neta</h2>
-        <form>
-          <fieldset>
-            <legend>La compra</legend>
-            <div>
-            <label for="in-precioCompra">Precio de compra (€)</label>
-            <input type="text" inputmode="decimal" autocomplete="off" id="in-precioCompra" name="precioCompra" />
-          </div>
-            <div>
-            <label for="in-itpPct">ITP (%)</label>
-            <input type="text" inputmode="decimal" autocomplete="off" id="in-itpPct" name="itpPct" />
-          </div>
-            <div>
-            <label for="in-notariaRegistro">Notaría y registro (€)</label>
-            <input type="text" inputmode="decimal" autocomplete="off" id="in-notariaRegistro" name="notariaRegistro" />
-          </div>
-            <div>
-            <label for="in-reforma">Reforma (€)</label>
-            <input type="text" inputmode="decimal" autocomplete="off" id="in-reforma" name="reforma" />
-          </div>
-          </fieldset>
-          <fieldset>
-            <legend>El alquiler</legend>
-            <div>
-            <label for="in-alquilerMensual">Alquiler mensual (€)</label>
-            <input type="text" inputmode="decimal" autocomplete="off" id="in-alquilerMensual" name="alquilerMensual" />
-          </div>
-          </fieldset>
-          <fieldset>
-            <legend>Gastos anuales</legend>
-            <div>
-            <label for="in-ibiAnual">IBI anual (€)</label>
-            <input type="text" inputmode="decimal" autocomplete="off" id="in-ibiAnual" name="ibiAnual" />
-          </div>
-            <div>
-            <label for="in-comunidadAnual">Comunidad anual (€)</label>
-            <input type="text" inputmode="decimal" autocomplete="off" id="in-comunidadAnual" name="comunidadAnual" />
-          </div>
-            <div>
-            <label for="in-segurosAnual">Seguros anual (€)</label>
-            <input type="text" inputmode="decimal" autocomplete="off" id="in-segurosAnual" name="segurosAnual" />
-          </div>
-          </fieldset>
-          <details class="avanzados">
-            <summary>Ajustes avanzados (mantenimiento, vacancia, gestión)</summary>
-            <div>
-            <label for="in-mantenimientoPct">Mantenimiento (% del alquiler anual)</label>
-            <input type="text" inputmode="decimal" autocomplete="off" id="in-mantenimientoPct" name="mantenimientoPct" />
-          </div>
-            <div>
-            <label for="in-vacanciaPct">Vacancia (% del año sin alquilar)</label>
-            <input type="text" inputmode="decimal" autocomplete="off" id="in-vacanciaPct" name="vacanciaPct" />
-          </div>
-            <div>
-            <label for="in-gestionPct">Gestión (% del alquiler anual)</label>
-            <input type="text" inputmode="decimal" autocomplete="off" id="in-gestionPct" name="gestionPct" />
-          </div>
-          </details>
-        </form>
-        <div id="res-rentabilidad"></div>
+      <section class="hero contenedor">
+        <h1>Calculadora de rentabilidad de alquiler</h1>
+        <p class="entradilla">Introduce el precio y el alquiler de un piso en España y obtén al momento su rentabilidad bruta y neta, la cuota de la hipoteca, el cashflow mensual y el cash-on-cash.</p>
       </section>
 
-      <section role="tabpanel" id="panel-hipoteca" aria-labelledby="tab-hipoteca" hidden>
-        <h2>Calculadora de hipoteca (sistema francés)</h2>
-        <form>
-          <div>
-            <label for="in-importe">Importe del préstamo (€)</label>
-            <input type="text" inputmode="decimal" autocomplete="off" id="in-importe" name="importe" />
-          </div>
-          <div>
-            <label for="in-interesAnualPct">Interés anual (%)</label>
-            <input type="text" inputmode="decimal" autocomplete="off" id="in-interesAnualPct" name="interesAnualPct" />
-          </div>
-          <div>
-            <label for="in-plazoAnios">Plazo (años)</label>
-            <input type="text" inputmode="decimal" autocomplete="off" id="in-plazoAnios" name="plazoAnios" />
-          </div>
-        </form>
-        <div id="res-hipoteca"></div>
+      <div class="contenedor calculadora" id="calculadora">
+        <div role="tablist" aria-label="Calculadoras">
+          <button role="tab" id="tab-rentabilidad" aria-selected="true" aria-controls="panel-rentabilidad" type="button">Rentabilidad</button>
+          <button role="tab" id="tab-hipoteca" aria-selected="false" aria-controls="panel-hipoteca" type="button" tabindex="-1">Hipoteca</button>
+          <button role="tab" id="tab-cashflow" aria-selected="false" aria-controls="panel-cashflow" type="button" tabindex="-1">Cashflow</button>
+        </div>
 
-        <div class="afiliacion">
-          <a id="afiliado-hipoteca" href="#" rel="sponsored">Compara hipotecas y ahórrate miles de €</a>
+        <section role="tabpanel" id="panel-rentabilidad" aria-labelledby="tab-rentabilidad" class="panel">
+          <div class="panel-entradas">
+            <h2 class="panel-titulo">Rentabilidad bruta y neta</h2>
+            <form>
+              <fieldset class="tarjeta">
+                <legend>El inmueble</legend>
+                <div class="campos">
+                  <div class="campo">
+                    <label for="in-precioCompra">Precio de compra</label>
+                    <div class="entrada"><input type="text" inputmode="decimal" autocomplete="off" id="in-precioCompra" name="precioCompra" /><span class="unidad" aria-hidden="true">€</span></div>
+                  </div>
+                  <div class="campo">
+                    <label for="in-alquilerMensual">Alquiler mensual</label>
+                    <div class="entrada"><input type="text" inputmode="decimal" autocomplete="off" id="in-alquilerMensual" name="alquilerMensual" /><span class="unidad" aria-hidden="true">€/mes</span></div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="tarjeta">
+                <legend>Gastos de compra</legend>
+                <div class="campos">
+                  <div class="campo">
+                    <label for="in-itpPct">ITP</label>
+                    <div class="entrada"><input type="text" inputmode="decimal" autocomplete="off" id="in-itpPct" name="itpPct" /><span class="unidad" aria-hidden="true">%</span></div>
+                  </div>
+                  <div class="campo">
+                    <label for="in-notariaRegistro">Notaría y registro</label>
+                    <div class="entrada"><input type="text" inputmode="decimal" autocomplete="off" id="in-notariaRegistro" name="notariaRegistro" /><span class="unidad" aria-hidden="true">€</span></div>
+                  </div>
+                  <div class="campo">
+                    <label for="in-reforma">Reforma</label>
+                    <div class="entrada"><input type="text" inputmode="decimal" autocomplete="off" id="in-reforma" name="reforma" /><span class="unidad" aria-hidden="true">€</span></div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="tarjeta">
+                <legend>Gastos anuales</legend>
+                <div class="campos">
+                  <div class="campo">
+                    <label for="in-ibiAnual">IBI</label>
+                    <div class="entrada"><input type="text" inputmode="decimal" autocomplete="off" id="in-ibiAnual" name="ibiAnual" /><span class="unidad" aria-hidden="true">€/año</span></div>
+                  </div>
+                  <div class="campo">
+                    <label for="in-comunidadAnual">Comunidad</label>
+                    <div class="entrada"><input type="text" inputmode="decimal" autocomplete="off" id="in-comunidadAnual" name="comunidadAnual" /><span class="unidad" aria-hidden="true">€/año</span></div>
+                  </div>
+                  <div class="campo">
+                    <label for="in-segurosAnual">Seguros</label>
+                    <div class="entrada"><input type="text" inputmode="decimal" autocomplete="off" id="in-segurosAnual" name="segurosAnual" /><span class="unidad" aria-hidden="true">€/año</span></div>
+                  </div>
+                </div>
+                <details class="avanzados">
+                  <summary>Ajustes avanzados <span class="summary-nota">mantenimiento, vacancia y gestión</span></summary>
+                  <div class="campos">
+                    <div class="campo">
+                      <label for="in-mantenimientoPct">Mantenimiento <span class="label-nota">% del alquiler</span></label>
+                      <div class="entrada"><input type="text" inputmode="decimal" autocomplete="off" id="in-mantenimientoPct" name="mantenimientoPct" /><span class="unidad" aria-hidden="true">%</span></div>
+                    </div>
+                    <div class="campo">
+                      <label for="in-vacanciaPct">Vacancia <span class="label-nota">% del año vacío</span></label>
+                      <div class="entrada"><input type="text" inputmode="decimal" autocomplete="off" id="in-vacanciaPct" name="vacanciaPct" /><span class="unidad" aria-hidden="true">%</span></div>
+                    </div>
+                    <div class="campo">
+                      <label for="in-gestionPct">Gestión <span class="label-nota">% del alquiler</span></label>
+                      <div class="entrada"><input type="text" inputmode="decimal" autocomplete="off" id="in-gestionPct" name="gestionPct" /><span class="unidad" aria-hidden="true">%</span></div>
+                    </div>
+                  </div>
+                </details>
+              </fieldset>
+            </form>
+          </div>
+          <div class="panel-resultados">
+            <div id="res-rentabilidad" class="resultados"></div>
+          </div>
+        </section>
+
+        <section role="tabpanel" id="panel-hipoteca" aria-labelledby="tab-hipoteca" class="panel" hidden>
+          <div class="panel-entradas">
+            <h2 class="panel-titulo">Hipoteca (sistema francés)</h2>
+            <form>
+              <fieldset class="tarjeta">
+                <legend>El préstamo</legend>
+                <div class="campos">
+                  <div class="campo">
+                    <label for="in-importe">Importe del préstamo</label>
+                    <div class="entrada"><input type="text" inputmode="decimal" autocomplete="off" id="in-importe" name="importe" /><span class="unidad" aria-hidden="true">€</span></div>
+                  </div>
+                  <div class="campo">
+                    <label for="in-interesAnualPct">Interés anual</label>
+                    <div class="entrada"><input type="text" inputmode="decimal" autocomplete="off" id="in-interesAnualPct" name="interesAnualPct" /><span class="unidad" aria-hidden="true">%</span></div>
+                  </div>
+                  <div class="campo">
+                    <label for="in-plazoAnios">Plazo</label>
+                    <div class="entrada"><input type="text" inputmode="decimal" autocomplete="off" id="in-plazoAnios" name="plazoAnios" /><span class="unidad" aria-hidden="true">años</span></div>
+                  </div>
+                </div>
+              </fieldset>
+            </form>
+            <div class="afiliacion">
+              <p><strong>¿Tu banco te da un buen tipo?</strong> Una décima menos de interés son miles de euros en 25 años.</p>
+              <a id="afiliado-hipoteca" href="#" rel="sponsored">Compara hipotecas <span aria-hidden="true">→</span></a>
+            </div>
+          </div>
+          <div class="panel-resultados">
+            <div id="res-hipoteca" class="resultados"></div>
+          </div>
+        </section>
+
+        <section role="tabpanel" id="panel-cashflow" aria-labelledby="tab-cashflow" class="panel" hidden>
+          <div class="panel-entradas">
+            <h2 class="panel-titulo">Cashflow y cash-on-cash</h2>
+            <form>
+              <fieldset class="tarjeta">
+                <legend>Tu aportación</legend>
+                <div class="campos">
+                  <div class="campo">
+                    <label for="in-entradaPct">Entrada <span class="label-nota">% del precio</span></label>
+                    <div class="entrada"><input type="text" inputmode="decimal" autocomplete="off" id="in-entradaPct" name="entradaPct" /><span class="unidad" aria-hidden="true">%</span></div>
+                  </div>
+                </div>
+                <p class="nota">Se usan el precio, el alquiler y los gastos de la pestaña <strong>Rentabilidad</strong> y el interés y el plazo de la pestaña <strong>Hipoteca</strong>. Aquí solo indicas cuánta entrada pones.</p>
+              </fieldset>
+            </form>
+          </div>
+          <div class="panel-resultados">
+            <div id="res-cashflow" class="resultados"></div>
+          </div>
+        </section>
+      </div>
+
+      <section id="como-calcular" class="contenedor guia">
+        <div class="guia-cabecera">
+          <p class="antetitulo">Guía rápida</p>
+          <h2>Cómo calcular la rentabilidad de un piso de alquiler</h2>
+        </div>
+        <div class="guia-texto">
+          <p>La <strong>rentabilidad bruta</strong> se calcula dividiendo el alquiler anual entre el coste total de la compra (precio + impuestos + notaría y registro + reforma): <em>bruta % = alquiler anual ÷ coste total × 100</em>. La <strong>rentabilidad neta</strong> descuenta además los gastos del año: IBI, comunidad, seguros, mantenimiento, la vacancia (los meses que el piso está vacío) y la gestión si la delegas: <em>neta % = (alquiler efectivo − gastos anuales) ÷ coste total × 100</em>.</p>
+          <p>Un ejemplo real: un piso de 120.000 € con un 8% de ITP (9.600 €), 1.500 € de notaría y registro y 6.000 € de reforma cuesta en total 137.100 €. Alquilado a 750 €/mes ingresa 9.000 € al año: un 6,6% bruto. Si el IBI, la comunidad y los seguros suman 1.100 € y reservas un 5% del alquiler para mantenimiento, la neta baja a un 5,4%. Ese es el número que importa — y el que esta calculadora te da al momento, junto con la cuota de la hipoteca y el cashflow que te queda cada mes.</p>
+          <p>Regla rápida para España: por debajo de un 4% neto, la inversión rara vez compensa el riesgo; entre el 5% y el 7% está el grueso de las operaciones razonables; por encima del 8% suele haber trabajo o riesgo extra (reforma integral, zona tensionada, alquiler por habitaciones).</p>
         </div>
       </section>
 
-      <section role="tabpanel" id="panel-cashflow" aria-labelledby="tab-cashflow" hidden>
-        <h2>Cashflow y cash-on-cash de tu inversión</h2>
-        <form>
-          <div>
-            <label for="in-entradaPct">Entrada (%)</label>
-            <input type="text" inputmode="decimal" autocomplete="off" id="in-entradaPct" name="entradaPct" />
+      <section id="faq" class="contenedor faq">
+        <div class="guia-cabecera">
+          <p class="antetitulo">Preguntas frecuentes</p>
+          <h2>Preguntas frecuentes sobre rentabilidad de alquiler</h2>
+        </div>
+        <div class="faq-rejilla">
+          <div class="faq-item">
+            <h3>¿Qué es la rentabilidad bruta de un alquiler?</h3>
+            <p>Es el porcentaje que resulta de dividir el alquiler anual entre el precio total de compra, sin descontar gastos ni impuestos.</p>
           </div>
-          <p class="nota">Usa el precio, alquiler y gastos de la pestaña <strong>Rentabilidad</strong> y el interés y plazo de la pestaña <strong>Hipoteca</strong>; aquí solo indicas cuánta entrada pones.</p>
-        </form>
-        <div id="res-cashflow"></div>
+          <div class="faq-item">
+            <h3>¿Qué es la rentabilidad neta?</h3>
+            <p>Es la rentabilidad bruta menos todos los gastos anuales (IBI, comunidad, seguros, mantenimiento, vacancia y gestión), dividida entre la inversión total.</p>
+          </div>
+          <div class="faq-item">
+            <h3>¿Qué es el cash-on-cash return?</h3>
+            <p>Es el rendimiento sobre el dinero realmente aportado (entrada, gastos de compra y reforma), en vez de sobre el precio total del inmueble, teniendo en cuenta la hipoteca.</p>
+          </div>
+          <div class="faq-item">
+            <h3>¿Cuánto ITP se paga al comprar un piso para alquilar en España?</h3>
+            <p>Depende de la comunidad autónoma: la mayoría aplica entre el 6% y el 10% en vivienda de segunda mano, y algunas lo han subido en 2025-2026 para grandes tenedores o segundas viviendas. Compruébalo siempre en tu comunidad.</p>
+          </div>
+          <div class="faq-item">
+            <h3>¿Qué gastos hay que descontar del alquiler para calcular el cashflow?</h3>
+            <p>La cuota de la hipoteca, el IBI, la comunidad, los seguros, el mantenimiento, la vacancia estimada y, si aplica, la gestión de un administrador de fincas.</p>
+          </div>
+          <div class="faq-item">
+            <h3>¿Qué rentabilidad neta se considera buena en una inversión de alquiler?</h3>
+            <p>En España suele considerarse atractiva una rentabilidad neta a partir del 5-6%, aunque varía según la ciudad y el riesgo asumido.</p>
+          </div>
+        </div>
       </section>
 
-      <section id="captura-email">
-        <h2>Recibe la guía gratuita del inversor</h2>
-        <form id="form-email" method="post" action="#">
-          <label for="in-email">Correo electrónico</label>
-          <input type="email" id="in-email" name="email" required />
-          <button type="submit">Quiero la guía</button>
-        </form>
+      <section id="captura-email" class="contenedor">
+        <div class="email-tarjeta">
+          <div class="email-texto">
+            <h2>Recibe la guía gratuita del inversor</h2>
+            <p>Checklist para analizar un piso antes de hacer una oferta: gastos ocultos, ITP por comunidad y cómo negociar el precio.</p>
+          </div>
+          <form id="form-email" method="post" action="#">
+            <label for="in-email" class="visualmente-oculto">Correo electrónico</label>
+            <input type="email" id="in-email" name="email" required placeholder="tu@correo.com" autocomplete="email" />
+            <button type="submit">Quiero la guía</button>
+          </form>
+        </div>
       </section>
 
-      <section id="como-calcular">
-        <h2>Cómo calcular la rentabilidad de un piso de alquiler</h2>
-        <p>La <strong>rentabilidad bruta</strong> se calcula dividiendo el alquiler anual entre el coste total de la compra (precio + impuestos + notaría y registro + reforma): <em>bruta % = alquiler anual ÷ coste total × 100</em>. La <strong>rentabilidad neta</strong> descuenta además los gastos del año: IBI, comunidad, seguros, mantenimiento, la vacancia (los meses que el piso está vacío) y la gestión si la delegas: <em>neta % = (alquiler efectivo − gastos anuales) ÷ coste total × 100</em>.</p>
-        <p>Un ejemplo real: un piso de 120.000 € con un 8% de ITP (9.600 €), 1.500 € de notaría y registro y 6.000 € de reforma cuesta en total 137.100 €. Alquilado a 750 €/mes ingresa 9.000 € al año: un 6,6% bruto. Si el IBI, la comunidad y los seguros suman 1.100 € y reservas un 5% del alquiler para mantenimiento, la neta baja a un 5,4%. Ese es el número que importa — y el que esta calculadora te da al momento, junto con la cuota de la hipoteca y el cashflow que te queda cada mes.</p>
-        <p>Regla rápida para España: por debajo de un 4% neto, la inversión rara vez compensa el riesgo; entre el 5% y el 7% está el grueso de las operaciones razonables; por encima del 8% suele haber trabajo o riesgo extra (reforma integral, zona tensionada, alquiler por habitaciones).</p>
-      </section>
-
-      <section id="faq">
-        <h2>Preguntas frecuentes sobre rentabilidad de alquiler</h2>
-
-        <h3>¿Qué es la rentabilidad bruta de un alquiler?</h3>
-        <p>Es el porcentaje que resulta de dividir el alquiler anual entre el precio total de compra, sin descontar gastos ni impuestos.</p>
-
-        <h3>¿Qué es la rentabilidad neta?</h3>
-        <p>Es la rentabilidad bruta menos todos los gastos anuales (IBI, comunidad, seguros, mantenimiento, vacancia y gestión), dividida entre la inversión total.</p>
-
-        <h3>¿Qué es el cash-on-cash return?</h3>
-        <p>Es el rendimiento sobre el dinero realmente aportado (entrada, gastos de compra y reforma), en vez de sobre el precio total del inmueble, teniendo en cuenta la hipoteca.</p>
-
-        <h3>¿Cuánto ITP se paga al comprar un piso para alquilar en España?</h3>
-        <p>Depende de la comunidad autónoma: la mayoría aplica entre el 6% y el 10% en vivienda de segunda mano, y algunas lo han subido en 2025-2026 para grandes tenedores o segundas viviendas. Compruébalo siempre en tu comunidad.</p>
-
-        <h3>¿Qué gastos hay que descontar del alquiler para calcular el cashflow?</h3>
-        <p>La cuota de la hipoteca, el IBI, la comunidad, los seguros, el mantenimiento, la vacancia estimada y, si aplica, la gestión de un administrador de fincas.</p>
-
-        <h3>¿Qué rentabilidad neta se considera buena en una inversión de alquiler?</h3>
-        <p>En España suele considerarse atractiva una rentabilidad neta a partir del 5-6%, aunque varía según la ciudad y el riesgo asumido.</p>
-      </section>
       <p id="live-resumen" class="visualmente-oculto" aria-live="polite" aria-atomic="true"></p>
     </main>
 
@@ -175,7 +262,11 @@
     <div class="ad-slot" id="ad-bottom"><!-- AdSense: pegar snippet aqui --></div>
 
     <footer>
-      <p>Hecho por inversores. ¿Analizas pisos en serio? → <a id="footer-inmomargen" href="#" rel="noopener">Descubre Inmomargen</a></p>
+      <div class="contenedor pie">
+        <p class="pie-marca">Rentómetro · Calculadora de rentabilidad de alquiler para España</p>
+        <p>Hecho por inversores. ¿Analizas pisos en serio? <a id="footer-inmomargen" href="#" rel="noopener">Descubre Inmomargen</a></p>
+        <p class="pie-legal">Resultados orientativos: no constituyen asesoramiento financiero ni fiscal.</p>
+      </div>
     </footer>
 
     <script type="application/ld+json">

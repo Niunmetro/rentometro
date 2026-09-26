@@ -5,6 +5,7 @@ import { calcularHipoteca } from "./calc/hipoteca";
 import { calcularCashflow } from "./calc/cashflow";
 import { formatearEuros, formatearPct } from "./format";
 import { interpretarBruta, interpretarNeta, interpretarCashflow, interpretarCashOnCash } from "./interpret";
+import { barraReparto, curvaAmortizacion, eurosCortos } from "./graficos";
 import { estadoAUrl, urlAEstado, guardarEnLocal, cargarDeLocal } from "./state";
 import { AFILIADO_HIPOTECA_URL, EMAIL_FORM_ACTION, FOOTER_URL } from "./config";
 import type {
@@ -148,27 +149,54 @@ function claseSemaforo(n: number, bueno: number, regular: number): string {
   return "kpi-mal";
 }
 
-function kpi(etiqueta: string, valor: string, clase: string): string {
-  return `<div class="kpi ${clase}"><span class="kpi-etiqueta">${etiqueta}</span><span class="kpi-valor">${valor}</span></div>`;
+// El color nunca va solo: cada semaforo lleva tambien una palabra.
+const SELLOS: Record<string, string> = {
+  "kpi-bien": "Buena",
+  "kpi-regular": "Justa",
+  "kpi-mal": "Baja",
+  "kpi-neutro": "",
+};
+
+function sello(clase: string, textos: Partial<Record<string, string>> = {}): string {
+  const t = textos[clase] ?? SELLOS[clase] ?? "";
+  return t ? `<span class="kpi-sello">${t}</span>` : "";
 }
 
-function renderRentabilidad(r: ResultadoRentabilidad): void {
+function kpiPrincipal(etiqueta: string, valor: string, clase: string, textos?: Partial<Record<string, string>>): string {
+  return `<div class="kpi kpi-principal ${clase}"><span class="kpi-etiqueta">${etiqueta}</span><span class="kpi-valor">${valor}</span>${sello(clase, textos)}</div>`;
+}
+
+function kpi(etiqueta: string, valor: string, clase: string, textos?: Partial<Record<string, string>>): string {
+  return `<div class="kpi ${clase}"><span class="kpi-etiqueta">${etiqueta}</span><span class="kpi-valor">${valor}</span>${sello(clase, textos)}</div>`;
+}
+
+function renderRentabilidad(r: ResultadoRentabilidad, estado: Record<Campo, number>): void {
   const el = document.getElementById("res-rentabilidad");
   if (!el) return;
+  const fijos = estado.ibiAnual + estado.comunidadAnual + estado.segurosAnual;
+  const variables = r.gastosAnuales - fijos;
+  const vacancia = r.alquilerAnual - r.alquilerAnualEfectivo;
+  const neto = r.alquilerAnualEfectivo - r.gastosAnuales;
   el.innerHTML = `
-    <div class="kpis">
+    <div class="res-cabecera">
+      ${kpiPrincipal("Rentabilidad neta", seguro(r.netaPct, formatearPct), claseSemaforo(r.netaPct, 6, 4))}
       ${kpi("Rentabilidad bruta", seguro(r.brutaPct, formatearPct), claseSemaforo(r.brutaPct, 7, 5))}
-      ${kpi("Rentabilidad neta", seguro(r.netaPct, formatearPct), claseSemaforo(r.netaPct, 6, 4))}
     </div>
-    <p class="interpretacion">${frase(r.brutaPct, interpretarBruta)}</p>
     <p class="interpretacion">${frase(r.netaPct, interpretarNeta)}</p>
+    ${barraReparto("Reparto del alquiler anual", [
+      { etiqueta: "Te queda (neto)", valor: neto, clase: "seg-1" },
+      { etiqueta: "IBI, comunidad y seguros", valor: fijos, clase: "seg-2" },
+      { etiqueta: "Mantenimiento y gestión", valor: variables, clase: "seg-3" },
+      { etiqueta: "Vacancia", valor: vacancia, clase: "seg-4" },
+    ])}
     <dl class="desglose">
-      <dt>Coste total de la operación</dt><dd>${seguro(r.costeTotal, formatearEuros)}</dd>
-      <dt>Impuestos de compra</dt><dd>${seguro(r.impuestos, formatearEuros)}</dd>
-      <dt>Alquiler anual</dt><dd>${seguro(r.alquilerAnual, formatearEuros)}</dd>
-      <dt>Alquiler efectivo (tras vacancia)</dt><dd>${seguro(r.alquilerAnualEfectivo, formatearEuros)}</dd>
-      <dt>Gastos anuales</dt><dd>${seguro(r.gastosAnuales, formatearEuros)}</dd>
+      <div><dt>Coste total de la operación</dt><dd>${seguro(r.costeTotal, formatearEuros)}</dd></div>
+      <div><dt>Impuestos de compra</dt><dd>${seguro(r.impuestos, formatearEuros)}</dd></div>
+      <div><dt>Alquiler anual</dt><dd>${seguro(r.alquilerAnual, formatearEuros)}</dd></div>
+      <div><dt>Alquiler efectivo (tras vacancia)</dt><dd>${seguro(r.alquilerAnualEfectivo, formatearEuros)}</dd></div>
+      <div><dt>Gastos anuales</dt><dd>${seguro(r.gastosAnuales, formatearEuros)}</dd></div>
     </dl>
+    <p class="interpretacion secundaria">${frase(r.brutaPct, interpretarBruta)}</p>
   `;
 }
 
@@ -177,36 +205,56 @@ function renderTablaPorAnio(tabla: FilaAmortizacion[]): string {
   const filas = tabla
     .map((f) => `<tr><td>${f.anio}</td><td>${seguro(f.capitalPendiente, formatearEuros)}</td></tr>`)
     .join("");
-  return `<table><thead><tr><th>Año</th><th>Capital pendiente</th></tr></thead><tbody>${filas}</tbody></table>`;
+  return `<div class="tabla-scroll"><table><thead><tr><th scope="col">Año</th><th scope="col">Capital pendiente</th></tr></thead><tbody>${filas}</tbody></table></div>`;
 }
 
-function renderHipoteca(r: ResultadoHipoteca): void {
+function renderHipoteca(r: ResultadoHipoteca, estado: Record<Campo, number>): void {
   const el = document.getElementById("res-hipoteca");
   if (!el) return;
+  const totalPagado = Number.isFinite(r.interesesTotales) ? estado.importe + r.interesesTotales : NaN;
   el.innerHTML = `
-    <div class="kpis">
-      ${kpi("Cuota mensual", seguro(r.cuotaMensual, formatearEuros), "kpi-neutro")}
+    <div class="res-cabecera">
+      ${kpiPrincipal("Cuota mensual", seguro(r.cuotaMensual, formatearEuros), "kpi-neutro")}
       ${kpi("Intereses totales", seguro(r.interesesTotales, formatearEuros), "kpi-neutro")}
     </div>
+    ${barraReparto("Lo que devuelves al banco", [
+      { etiqueta: "Capital prestado", valor: estado.importe, clase: "seg-2" },
+      { etiqueta: "Intereses", valor: r.interesesTotales, clase: "seg-4" },
+    ])}
+    ${curvaAmortizacion(estado.importe, r.tablaPorAnio)}
+    <dl class="desglose">
+      <div><dt>Total a devolver</dt><dd>${seguro(totalPagado, formatearEuros)}</dd></div>
+    </dl>
     <details class="amortizacion"><summary>Ver capital pendiente año a año</summary>${renderTablaPorAnio(r.tablaPorAnio)}</details>
   `;
 }
 
-function renderCashflow(r: ResultadoCashflow): void {
+function renderCashflow(r: ResultadoCashflow, rent: ResultadoRentabilidad): void {
   const el = document.getElementById("res-cashflow");
   if (!el) return;
+  const textosCash = { "kpi-bien": "Positivo", "kpi-regular": "Neutro", "kpi-mal": "Negativo" };
+  const alquilerMes = rent.alquilerAnualEfectivo / 12;
+  const gastosMes = rent.gastosAnuales / 12;
   el.innerHTML = `
-    <div class="kpis">
-      ${kpi("Cashflow mensual", seguro(r.cashflowMensual, formatearEuros), claseSemaforo(r.cashflowMensual, 1, 0))}
+    <div class="res-cabecera">
+      ${kpiPrincipal("Cashflow mensual", seguro(r.cashflowMensual, formatearEuros), claseSemaforo(r.cashflowMensual, 1, 0), textosCash)}
       ${kpi("Cash-on-cash", seguro(r.cashOnCashPct, formatearPct), claseSemaforo(r.cashOnCashPct, 8, 4))}
     </div>
     <p class="interpretacion">${frase(r.cashflowMensual, interpretarCashflow)}</p>
-    <p class="interpretacion">${frase(r.cashOnCashPct, interpretarCashOnCash)}</p>
+    ${barraReparto(
+      `A dónde va el alquiler de cada mes (${eurosCortos(alquilerMes)})`,
+      [
+        { etiqueta: "Te queda", valor: r.cashflowMensual, clase: "seg-1" },
+        { etiqueta: "Cuota de la hipoteca", valor: r.cuotaMensual, clase: "seg-2" },
+        { etiqueta: "Gastos del piso", valor: gastosMes, clase: "seg-3" },
+      ],
+    )}
     <dl class="desglose">
-      <dt>Cuota mensual de la hipoteca</dt><dd>${seguro(r.cuotaMensual, formatearEuros)}</dd>
-      <dt>Capital que aportas</dt><dd>${seguro(r.capitalAportado, formatearEuros)}</dd>
-      <dt>Cashflow anual</dt><dd>${seguro(r.cashflowAnual, formatearEuros)}</dd>
+      <div><dt>Cuota mensual de la hipoteca</dt><dd>${seguro(r.cuotaMensual, formatearEuros)}</dd></div>
+      <div><dt>Capital que aportas</dt><dd>${seguro(r.capitalAportado, formatearEuros)}</dd></div>
+      <div><dt>Cashflow anual</dt><dd>${seguro(r.cashflowAnual, formatearEuros)}</dd></div>
     </dl>
+    <p class="interpretacion secundaria">${frase(r.cashOnCashPct, interpretarCashOnCash)}</p>
   `;
 }
 
@@ -217,9 +265,9 @@ function actualizar(): void {
 
   const rent = calcularRentabilidad(construirEntradasRentabilidad(estado));
   const cash = calcularCashflow(construirEntradasCashflow(estado));
-  renderRentabilidad(rent);
-  renderHipoteca(calcularHipoteca(construirEntradasHipoteca(estado)));
-  renderCashflow(cash);
+  renderRentabilidad(rent, estado);
+  renderHipoteca(calcularHipoteca(construirEntradasHipoteca(estado)), estado);
+  renderCashflow(cash, rent);
 
   // Barra fija inferior: las 2 cifras que importan, visibles al teclear en movil.
   const sticky = document.getElementById("kpi-sticky");
