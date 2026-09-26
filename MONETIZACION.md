@@ -16,10 +16,8 @@ El bloque "Compara hipotecas" bajo la calculadora de hipoteca apunta a `AFILIADO
 
 Una sola hipoteca firmada al mes ya son 50-300 €/mes.
 
-## 3. Captura de emails (activo a largo plazo) — ~5 min
-El formulario "Recibe la guía del inversor" apunta a `EMAIL_ENDPOINT` en `src/config.ts`.
-- Gratis: crea un form en https://formspree.io (50 envíos/mes gratis) y pega la URL.
-- Esa lista es el día de mañana el lanzamiento de **Inmomargen**.
+## 3. Captura de emails — retirada
+El bloque "Recibe la guía gratuita del inversor" se quitó (sept. 2026): prometía una guía que no existía y no enviaba nada. Si algún día hay guía real (PDF o página) y endpoint (p. ej. Formspree en `EMAIL_FORM_ACTION` de `src/config.ts`), se puede reponer; hasta entonces, no prometer nada que no ocurra.
 
 ## 4. Funnel a Inmomargen (estratégico)
 El footer enlaza a `INMOMARGEN_URL` en `src/config.ts` (ahora '#'). Cuando Inmomargen tenga landing, pon la URL: cada usuario de la calculadora es un lead cualificado de tu SaaS.

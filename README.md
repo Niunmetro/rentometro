@@ -41,7 +41,7 @@ git worktree remove ../rentometro-gh-pages
 
 ## Monetización
 
-Ver [MONETIZACION.md](MONETIZACION.md): huecos de AdSense, afiliación de hipotecas y captura de emails, todos configurables desde `src/config.ts`.
+Ver [MONETIZACION.md](MONETIZACION.md): huecos de AdSense y afiliación de hipotecas, configurables desde `src/config.ts`.
 
 ---
 

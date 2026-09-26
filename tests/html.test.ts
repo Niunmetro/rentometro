@@ -16,8 +16,8 @@ describe("index.html", () => {
     expect(html).toContain('rel="sponsored"');
   });
 
-  it("contiene el formulario de captura de email", () => {
-    expect(html).toContain('id="form-email"');
+  it("no promete una guía por email que no existe", () => {
+    expect(html).not.toContain('id="form-email"');
   });
 
   it("contiene JSON-LD FAQPage con al menos 6 preguntas", () => {

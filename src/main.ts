@@ -7,7 +7,7 @@ import { formatearEuros, formatearPct } from "./format";
 import { interpretarBruta, interpretarNeta, interpretarCashflow, interpretarCashOnCash } from "./interpret";
 import { barraReparto, curvaAmortizacion, eurosCortos } from "./graficos";
 import { estadoAUrl, urlAEstado, guardarEnLocal, cargarDeLocal } from "./state";
-import { AFILIADO_HIPOTECA_URL, EMAIL_FORM_ACTION, FOOTER_URL } from "./config";
+import { AFILIADO_HIPOTECA_URL, FOOTER_URL } from "./config";
 import type {
   EntradasRentabilidad,
   EntradasHipoteca,
@@ -360,23 +360,8 @@ function inicializarEnlaces(): void {
     afiliado.href = AFILIADO_HIPOTECA_URL;
   }
 
-  const formEmail = document.getElementById("form-email");
-  if (formEmail instanceof HTMLFormElement) {
-    formEmail.action = EMAIL_FORM_ACTION;
-    formEmail.addEventListener("submit", (ev) => {
-      if (EMAIL_FORM_ACTION === "#") {
-        // Sin endpoint configurado, un POST a una pagina estatica daria un 405 feo.
-        ev.preventDefault();
-        const aviso = document.createElement("p");
-        aviso.className = "nota";
-        aviso.textContent = "La guía está en camino: vuelve en unos días y déjanos tu correo.";
-        formEmail.replaceChildren(aviso);
-      }
-    });
-  }
-
   // Enter en un input de calculo NO debe recargar la pagina (forms sin action).
-  document.querySelectorAll("main form:not(#form-email)").forEach((f) => {
+  document.querySelectorAll("main form").forEach((f) => {
     f.addEventListener("submit", (ev) => ev.preventDefault());
   });
 
