@@ -10,7 +10,7 @@ La web ya está preparada con los huecos. Solo tienes que pegar tus IDs.
 Realista: con 1.000 visitas/mes de SEO, 3-10 €/mes. Con 10.000, 30-100 €/mes. Crece solo si la página posiciona (ya lleva el SEO técnico hecho).
 
 ## 2. Afiliación de hipotecas (el dinero de verdad) — ~5 min
-El bloque "Compara hipotecas" bajo la calculadora de hipoteca apunta a `AFILIADO_HIPOTECA_URL` en `src/config.ts`.
+El bloque "Compara hipotecas" de la pestaña Hipoteca usa `AFILIADO_HIPOTECA_URL` en `src/config.ts`. Mientras esa constante esté vacía el bloque queda **oculto**; al pegar una URL real (https://...) aparece solo.
 - Opciones en España: **idealista/hipotecas** (programa de afiliados vía Awin), **Rastreator**, **Kelisto**, o un broker tipo **Trioteca** (pagan 50-300 € por hipoteca firmada referida).
 - Date de alta en Awin (https://www.awin.com) → busca el anunciante → copia tu enlace → pégalo en `src/config.ts`.
 
@@ -20,7 +20,7 @@ Una sola hipoteca firmada al mes ya son 50-300 €/mes.
 El bloque "Recibe la guía gratuita del inversor" se quitó (sept. 2026): prometía una guía que no existía y no enviaba nada. Si algún día hay guía real (PDF o página) y endpoint (p. ej. Formspree en `EMAIL_FORM_ACTION` de `src/config.ts`), se puede reponer; hasta entonces, no prometer nada que no ocurra.
 
 ## 4. Funnel a Inmomargen (estratégico)
-El footer enlaza a `INMOMARGEN_URL` en `src/config.ts` (ahora '#'). Cuando Inmomargen tenga landing, pon la URL: cada usuario de la calculadora es un lead cualificado de tu SaaS.
+El footer enlaza a `FOOTER_URL` en `src/config.ts`: https://inmomargen.vercel.app (pestaña nueva). Cada usuario de la calculadora es un lead cualificado del SaaS.
 
 ## 5. SEO: qué ya está hecho y qué no cuesta nada
 - Hecho: title/description/OG/canonical, FAQ con schema.org (sale en Google como desplegables), robots.txt, sitemap.xml, carga < 50 KB.

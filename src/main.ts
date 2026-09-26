@@ -359,6 +359,12 @@ function inicializarEnlaces(): void {
   if (afiliado instanceof HTMLAnchorElement) {
     afiliado.href = AFILIADO_HIPOTECA_URL;
   }
+  // Sin enlace de afiliado real no se muestra el bloque: nada de botones a ninguna parte.
+  const bloqueAfiliado = document.getElementById("bloque-afiliacion");
+  if (bloqueAfiliado) {
+    const hayEnlace = /^https?:\/\//.test(AFILIADO_HIPOTECA_URL);
+    bloqueAfiliado.hidden = !hayEnlace;
+  }
 
   // Enter en un input de calculo NO debe recargar la pagina (forms sin action).
   document.querySelectorAll("main form").forEach((f) => {

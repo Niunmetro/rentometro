@@ -666,6 +666,9 @@ th:last-child {
 }
 
 /* Afiliación */
+.afiliacion[hidden] {
+  display: none;
+}
 .afiliacion {
   margin-top: 14px;
   padding: 16px 18px;
@@ -875,7 +878,10 @@ footer a {
   .panel-resultados {
     order: 1;
   }
-  .afiliacion {
+  .afiliacion[hidden] {
+  display: none;
+}
+.afiliacion {
     order: 2;
     margin-top: 0;
   }
